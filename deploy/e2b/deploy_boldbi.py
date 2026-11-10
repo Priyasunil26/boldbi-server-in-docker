@@ -3,8 +3,10 @@
 Usage:
     pip install e2b
     export E2B_API_KEY=...
+    export E2B_TEMPLATE=<template with >=8 GB RAM>   # default 'base' has only 512 MB
     python deploy_boldbi.py
 """
+import os
 import time
 import urllib.request
 
@@ -24,7 +26,7 @@ def main():
     # Use a template with 8+ GB RAM (Bold BI needs it) and Docker preinstalled if you have one;
     # otherwise Docker is installed below on the default template.
     # allow_public_traffic lets browsers open the URL without the e2b-traffic-access-token header
-    sbx = Sandbox.create(timeout=TIMEOUT, network={"allow_public_traffic": True})
+    sbx = Sandbox.create(os.environ.get("E2B_TEMPLATE", "base"), timeout=TIMEOUT, network={"allow_public_traffic": True})
     print("Sandbox:", sbx.sandbox_id)
 
     if "Docker version" not in sbx.commands.run("docker --version || true", user="root").stdout:
