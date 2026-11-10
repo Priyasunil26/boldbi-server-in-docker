@@ -8,6 +8,6 @@ Template.build(
     "boldbi-docker",
     cpu_count=4,
     memory_mb=8192,
-    min_free_disk_mb=30720,  # Bold BI image is large; default leaves ~10 GB
+    min_free_disk_mb=25600,  # Bold BI image is large; default leaves ~10 GB
     on_build_logs=default_build_logger(),
 )
