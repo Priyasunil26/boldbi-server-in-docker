@@ -23,7 +23,8 @@ def sh(sbx, cmd, **kw):
 def main():
     # Use a template with 8+ GB RAM (Bold BI needs it) and Docker preinstalled if you have one;
     # otherwise Docker is installed below on the default template.
-    sbx = Sandbox.create(timeout=TIMEOUT)
+    # allow_public_traffic lets browsers open the URL without the e2b-traffic-access-token header
+    sbx = Sandbox.create(timeout=TIMEOUT, network={"allow_public_traffic": True})
     print("Sandbox:", sbx.sandbox_id)
 
     if "Docker version" not in sbx.commands.run("docker --version || true", user="root").stdout:
@@ -51,10 +52,10 @@ def main():
     for _ in range(60):
         try:
             urllib.request.urlopen(url, timeout=10)
-            break
+            break  # 2xx; redirects are followed
         except Exception as e:
             code = getattr(e, "code", None)
-            if code and code < 500:
+            if code and code < 400:
                 break
             time.sleep(10)
     print("Bold BI URL:", url)
